@@ -10,6 +10,7 @@ BOT_TOKEN = os.getenv('BOT_TOKEN')
 # set intents
 intents = discord.Intents.default()
 intents.message_content = True
+
 client = commands.Bot(command_prefix = '!!', intents=intents)
 
 # startup
@@ -22,5 +23,20 @@ async def on_ready():
 @client.command()
 async def hello(ctx):
     await ctx.send('Hello!')
+
+@client.command(pass_context=True)
+async def join(ctx):
+    if (ctx.author.voice):
+        channel = ctx.author.voice.channel
+        await channel.connect()
+    else:
+        await ctx.send('You are not in a voice channel!')
+
+@client.command(pass_context=True)
+async def leave(ctx):
+   if (ctx.voice_client):
+       await ctx.guild.voice_client.disconnect()
+    else:
+        await ctx.send('I am not in a voice channel!')
 
 client.run(BOT_TOKEN)
